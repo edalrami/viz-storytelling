@@ -66,8 +66,18 @@ us_state_abbrev = {
     'Wyoming': 'WY',
 }
 
+
 abbrev_us_state = dict(map(reversed, us_state_abbrev.items()))
 
+def get_state_dropdown():
+    dict_list= []
+    for i in us_state_abbrev.keys():
+        dict_list.append({'label': i, 'value': i})
+    return dict_list
+
+
+def get_state_names():
+    return list(us_state_abbrev.keys())
 
 def remove_chars(input_):
     '''
@@ -354,8 +364,8 @@ def generate_map_object(input_, period_, category_):
 
     fig.update_layout(
         #color_axis=dict(color_axis = dict(colorbar=dict(len=)))
-        height=900,
-        width=1200,
+        height=700,
+        width=1100,
         title_text=str(period_) + ' '+ category_ + ' Stressor<br>(Hover for breakdown)',
         geo = dict(
             scope='usa',
@@ -363,5 +373,114 @@ def generate_map_object(input_, period_, category_):
             showlakes=True, # lakes
             lakecolor='rgb(255, 255, 255)'),
     )
+    
+    return fig
+
+
+def generate_line_plot(input_, col_names, state_):
+    '''
+    Returns a multiline graph object of stressors for a specfic US state.
+    
+    input parameters:
+        input_: DataFrame containing data
+        col_names: Names of lines to be traced
+        state_: Name of US State the
+    
+    output
+    '''
+    fig = go.Figure()
+    annotations = []
+    colors = ['crimson', 'LightSkyBlue', "MediumPurple", "green", "orange", "yellowgreen"]
+    color_ix = 0
+    for i in col_names:
+        
+        x_=list(input_[input_.state == state_].period)
+        y_=list(input_[input_.state == state_][i])
+
+        line_size = 4
+        mode_size = 12
+        color_ = colors[color_ix]
+
+        fig.add_trace(go.Scatter(x=x_, y=y_, mode='lines',
+            name=i,
+            line=dict(color=color_, width=line_size),
+            connectgaps=True,
+            showlegend=True
+        ))
+
+        # endpoints
+        max_val = max(y_)
+        max_ix = x_[np.argmax(np.array(y_))]
+        fig.add_trace(go.Scatter(
+            x=[max_ix],
+            y=[max_val],
+            name=i,
+            mode='markers+text',
+            marker=dict(color=color_, size=mode_size),
+            showlegend = False,
+            text = '{}%'.format(round(max_val,2)),
+            textposition = 'middle right'
+        ))
+        
+        color_ix = color_ix + 1
+        
+    
+    fig.update_layout(
+        width = 800,
+        height = 800,
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            showline=False,
+            showticklabels=False,
+        ),
+        autosize=False,
+        margin=dict(
+            autoexpand=False,
+            l=100,
+            r=20,
+            t=110,
+        ),
+        showlegend=False,
+        plot_bgcolor='white'
+    )
+
+    # Title
+    annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+                                  xanchor='left', yanchor='bottom',
+                                  text='Bee Colony Stressors in the State of ' + state_,
+                                  font=dict(family='Arial',
+                                            size=30,
+                                            color='rgb(37,37,37)'),
+                                  showarrow=False))
+    # Source
+    annotations.append(dict(xref='paper', yref='paper', x=0.5, y=-0.1,
+                                  xanchor='center', yanchor='top',
+                                  text='Source: United States Department of Agriculture (USDA)',
+                                  font=dict(family='Arial',
+                                            size=12,
+                                            color='rgb(150,150,150)'),
+                                  showarrow=False))
+    
+    tick_text = ["2015", "", "", "", "2016", "", "", "", "2017", "", "", "", "2018", "", "", ""]
+    tick_vals = ["2015Q1", "2015Q2", "2015Q3", "2015Q4",
+                 "2016Q1", "2016Q2", "2016Q3", "2016Q4", 
+                 "2017Q1", "2017Q2", "2017Q3", "2017Q4", 
+                 "2018Q1", "2018Q2", "2018Q3", "2018Q4"]
+    fig.update_xaxes(ticktext=tick_text, tickvals = tick_vals, tickangle=0, tickfont=dict(family='Rockwell'))
+    fig.update_layout(annotations=annotations, showlegend=True, legend_orientation='h', legend=dict(x=0, y=1.03))
     
     return fig
