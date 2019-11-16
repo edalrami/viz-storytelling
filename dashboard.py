@@ -10,9 +10,9 @@ import pandas as pd
 external_stylesheets_ = ['https://codepen.io/amyoshino/pen/jzXypZ.css']
 
 
-all_data = get_data()
-honey_data = all_data[0]
-colony_data = all_data[1]
+
+honey_data = pd.read_csv('all_honey_data.csv')
+colony_data = pd.read_csv('all_colony_data.csv')
 period_vals = list(colony_data.period.unique())
 slider_markers = {i+1: period_vals[i] for i in range(len(period_vals))}
 stressors = ["varroa_mites", "other_pests", "other", "pesticides", "unknown", "diseases", "lost_perc"]
