@@ -20,15 +20,43 @@ state_dropdown = get_state_dropdown()
 state_names = get_state_names()
 
 app = dash.Dash(__name__, external_stylesheets = external_stylesheets_)
+server = app.server 
 app.title = "Honey Report"
 app.layout = html.Div(children=[
     html.Div([
-        html.H1(children='The Story of US Honey and Bee Colonies'),
+        html.H1(children=['The Story of US Honey and Bee Colonies']),
+        html.H2(children = '  yet to be finished by Edwin Ramirez'),
 
         #paragraph
         html.Div([
-        	html.P('EXAMPLE 1 good bladbla afblasfblasfb blasfblasflb basflasfblaf basflbasfbl aAPPLES yadadssd asdnasd infasf asfapf a aspfaspfa p asfp aspf aspfap asfpasf p '),
-        	html.P('Paragraph 2')], 
+        	html.P('In 2006 the US Environmental Protection Agency (EPA)' + \
+        		' reported the high emergence of colony collapse disorder (CCD)' + \
+        		' among bee populations throughout the United States. The large' + \
+        		' number of colonies dying had no single direct cause linked at the' + \
+        		' time even after several studies attempted to link possible' +\
+        		' colony stressors to the epidemic, such as pesticides, diseases,'+ \
+        		' parasites, weather, etc. With such a vital' + \
+        		' role in the ecosystem as pollinators and as producers of honey,' + \
+        		' the significance of bee preservation is not something to be ingored' + \
+        		' as factors, such as climate change and increasing pesticide usage' + \
+        		' continue to harm the populations. Over ten years after the CCD epidemic began' + \
+        		' researchers discovered that neonicotinoid pesticides were killing off colony' + \
+        		' populations, and the EPA responded by banning all use of harmful pesticides' + \
+        		' to honey bee populations.'),
+        	
+
+        	html.P('The United States Department of Agriculture (USDA) has been recording' +\
+        		' data on honey production per state since the 1970s, and recently began' + \
+        		' collecting data on colony populations and potential colony stressors starting in 2015.' + \
+        		' The objective of this report is to understand how colony stressors recorded from 2015 to 2018' + \
+        		' may have affected the populations per state, and to also analyze the potential' + \
+        		' stressors that affect each state more than others. Additionally, this report' + \
+        		' will also analyze the honey industry in the United States prior to the outbreak and after' + \
+        		' (2000-2018). With the utilization of the USDA data that is recorded annually, a series of dynamic' + \
+        		' visualizations will be used to study where in the United States certain stressors have' + \
+        		' affected each region more than others. Additionally, these visualizations will also' + \
+        		' explore which states throughout the US have been flagged with USDA violations for specific' + \
+        		' pesticide usage using pesticide data specifically focused on honey from 2000-2017.')], 
         className='six columns', 
         style={'margin-top':"10%",
         		'margin-bottom': '10%'}),
