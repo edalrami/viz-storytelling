@@ -344,7 +344,12 @@ def generate_map_object(input_, period_, category_):
     
     df = input_[input_['period'] == period_]
     
-    
+    stressor_keys = {'varroa_mites': "Varroa Mites",
+                 'pesticides': "Pesticides",
+                 'other': 'Other Categories (Weather, Starvation, etc.)',
+                 'unknown': 'Unknown Causes',
+                 'other_pests': 'Other Pests (Tracheal Mites, Hive Beetles, Wax Moths, etc.)',
+                'diseases': 'Diseases (Foulbrood, Chalkbrood, Stonebrood, Paralysis)'}
     
     fig = go.Figure(data=go.Choropleth(
        
@@ -355,7 +360,7 @@ def generate_map_object(input_, period_, category_):
         locationmode='USA-states',
         colorscale='Reds',
         autocolorscale=False,
-        #text=test_df['text'], # hover text
+        text=df.state, # hover text
         marker_line_color='white', # line markers between states
         colorbar_title="population %",
         #coloraxis = dict(cmin = 0, cmax = 100),
@@ -366,7 +371,7 @@ def generate_map_object(input_, period_, category_):
         #color_axis=dict(color_axis = dict(colorbar=dict(len=)))
         height=700,
         width=1100,
-        title_text=str(period_) + ' '+ category_ + ' Stressor<br>(Hover for breakdown)',
+        title_text= 'Honey Bee Colony Populations Affected By '+ stressor_keys[category_] + " " + str(period_) + '<br>(Hover for breakdown)',
         geo = dict(
             scope='usa',
             projection=go.layout.geo.Projection(type = 'albers usa'),
@@ -390,7 +395,7 @@ def generate_line_plot(input_, col_names, state_):
     '''
     fig = go.Figure()
     annotations = []
-    colors = ['crimson', 'LightSkyBlue', "MediumPurple", "green", "orange", "yellowgreen"]
+    colors = ['crimson', 'LightSkyBlue', "MediumPurple", "green", "orange", "yellowgreen", "brown"]
     color_ix = 0
     for i in col_names:
         
@@ -427,7 +432,7 @@ def generate_line_plot(input_, col_names, state_):
     
     fig.update_layout(
         width = 800,
-        height = 800,
+        height = 500,
         xaxis=dict(
             showline=True,
             showgrid=False,
@@ -482,5 +487,53 @@ def generate_line_plot(input_, col_names, state_):
                  "2018Q1", "2018Q2", "2018Q3", "2018Q4"]
     fig.update_xaxes(ticktext=tick_text, tickvals = tick_vals, tickangle=0, tickfont=dict(family='Rockwell'))
     fig.update_layout(annotations=annotations, showlegend=True, legend_orientation='h', legend=dict(x=0, y=1.03))
+    
+    return fig
+
+
+def generate_bubble_chart(input_, year_, n):
+    fig = go.Figure()
+    w_ = input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).state
+    x_=input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).avg_price_per_lb
+    y_=input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).yield_per_col
+    z_ = input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).honey_colonies
+    
+    annotations = []
+    for q,i,j,k in zip(w_,x_,y_,z_):
+        fig.add_trace(go.Scatter(
+            x= [i],
+            y= [j],
+            name = str(q),
+            mode='markers',
+            marker=dict(
+                opacity=0.6,
+                size=[int(k)/5],
+            ),
+            showlegend = True,
+            text = q + '<br>' + 'No. of Colonies: {}'.format(k) + 'k',
+            textposition = 'top center'
+        ))
+        
+     # Title
+    annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+                                  xanchor='left', yanchor='bottom',
+                                  text='Top ' + str(n) + " Honey Producing States In " + str(year_),
+                                  font=dict(family='Arial',
+                                            size=30,
+                                            color='rgb(37,37,37)'),
+                                  showarrow=False))
+    # Source
+    annotations.append(dict(xref='paper', yref='paper', x=0.5, y=-0.1,
+                                  xanchor='center', yanchor='top',
+                                  text='Source: United States Department of Agriculture (USDA)',
+                                  font=dict(family='Arial',
+                                            size=12,
+                                            color='rgb(150,150,150)'),
+                                  showarrow=False))
+    
+    fig.update_layout(height=800, width = 1200,annotations=annotations,
+                     xaxis_title = "Avg. Price Per Pound (US$)",
+                     yaxis_title = "Yield Per Colony (lbs.)",
+                     plot_bgcolor = 'white')
     
     return fig
