@@ -79,12 +79,12 @@ app.layout = html.Div(children=[
                         value='varroa_mites'
                 ),
             ],
-            className='two columns',
+            className='four columns',
             style={'margin-right': '10%',
             	   'display':'inline-block'}
         ),
 
-        html.Div([], className = 'ten columns'),
+        html.Div([], className = 'eight columns'),
        
         #map
         html.Div(
@@ -208,7 +208,7 @@ app.layout = html.Div(children=[
 	        		id='bubble-plot'
 	        )], 
 	        className = "six columns",
-	        style = {'margin-top':'1%',
+	        style = {'margin-top':'3%',
 	        		 #'margin-left' : '10%',
 	        		 #'margin-right': '10%',
 	        		 'margin-bottom': '10%'}),
