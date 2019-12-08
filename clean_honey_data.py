@@ -486,7 +486,7 @@ def generate_line_plot(input_, col_names, state_):
                  "2017Q1", "2017Q2", "2017Q3", "2017Q4", 
                  "2018Q1", "2018Q2", "2018Q3", "2018Q4"]
     fig.update_xaxes(ticktext=tick_text, tickvals = tick_vals, tickangle=0, tickfont=dict(family='Rockwell'))
-    fig.update_layout(annotations=annotations, showlegend=True, legend_orientation='h', legend=dict(x=0, y=1.03))
+    fig.update_layout(annotations=annotations, showlegend=True, legend_orientation='h', legend=dict(x=0, y=1.04))
     
     return fig
 
@@ -495,6 +495,7 @@ def generate_bubble_chart(input_, year_, n):
     fig = go.Figure()
     w_ = input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).state
     x_=input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).avg_price_per_lb
+    x_ = x_/100
     y_=input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).yield_per_col
     z_ = input_[input_.year==year_].sort_values(by='honey_colonies', ascending = False).head(n).honey_colonies
     
@@ -532,7 +533,7 @@ def generate_bubble_chart(input_, year_, n):
                                   showarrow=False))
     
     fig.update_layout(height=800, width = 1200,annotations=annotations,
-                     xaxis_title = "Avg. Price Per Pound (US$)",
+                     xaxis_title = "Avg. Price Per Pound ($US)",
                      yaxis_title = "Yield Per Colony (lbs.)",
                      plot_bgcolor = 'white')
     
